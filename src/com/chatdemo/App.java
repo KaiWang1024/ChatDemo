@@ -1,6 +1,8 @@
 package com.chatdemo;
 
 import edu.mum.ASDChatClient;
+import edu.mum.domain.IRequestModel;
+import edu.mum.domain.IResponseModel;
 import edu.mum.domain.RequestModel;
 import edu.mum.domain.ResponseModel;
 import edu.mum.request.Listener;
@@ -147,13 +149,18 @@ public class App implements Listener
         this.client.createGroup(groupName, memList);
     }
 
+    private void disconnect() {
+        this.client.disConnect();
+    }
+
     public static void printHelp() {
         System.out.println("/help \t\t\t\t\t Check command format.");
-        System.out.println("/quit \t\t\t\t\t Quit app");
         System.out.println("/username [-g] message \t\t Send 'message' to 'username'. Use [-g] to send a message to a group, here 'username' is the group name.");
         System.out.println("/register -u username -p password \t Register a new user.");
+        System.out.println("/login -u username -p password \t    Current user login to server.");
         System.out.println("/users \t\t\t\t\tGet online user list.");
         System.out.println("/groups\t\t\t\t\tGet group list");
+        System.out.println("/group -u 'name' -l [users] \t\t Create a new group, [users] is an array of user name separated by comma");
     }
 
     private void getOnlineUsers() {
@@ -165,12 +172,14 @@ public class App implements Listener
     }
 
     @Override
-    public void receiveResponse(ResponseModel response) {
-        System.out.println("Response: " + response.getPayload());
+    public void receiveResponse(IResponseModel response) {
+        System.out.println("Response from server: ");
+        System.out.println(response.toString());
     }
 
     @Override
-    public void receiveMessage(RequestModel message) {
-        System.out.println(message.getFrom() + ": " + message.getPayload());
+    public void receiveMessage(IRequestModel model) {
+        RequestModel msg = (RequestModel)model;
+        System.out.println(msg.getFrom() + ": " + msg.getPayload());
     }
 }
